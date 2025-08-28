@@ -21,6 +21,12 @@
           email: email.value,
           password: password.value,
         },
+      })
+      Swal.fire({
+        icon: 'success',
+        title: 'Registration successful',
+        text: 'You have been registered successfully!',
+        confirmButtonText: 'Close',
       });
       console.log('User registration response:', response);
     } catch (error: any) {
@@ -30,6 +36,7 @@
         icon: 'error',
         title: 'Oops...',
         text: errorMsg.value,
+        confirmButtonText: 'Close',
       });
     } finally {
       loading.value = false;
