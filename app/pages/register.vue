@@ -1,18 +1,39 @@
 <script setup lang="ts">
+  import { ref } from 'vue';
+
+  import Swal from 'sweetalert2';
+
   import Logo from '~/components/svg/Logo.vue';
 
   const email = ref('');
   const password = ref('');
+  const loading = ref(false);
+  const errorMsg = ref('');
 
-  const submitForm = () => {
-    const response = $fetch('/api/user', {
-      method: 'POST',
-      data: {
-        email: email.value,
-        password: password.value,
-      },
-    });
-    console.log('User registration response:', response);
+
+  const submitForm = async () => {
+    errorMsg.value = '';
+    loading.value = true;
+    try {
+      const response = await $fetch('/api/user', {
+        method: 'POST',
+        body: {
+          email: email.value,
+          password: password.value,
+        },
+      });
+      console.log('User registration response:', response);
+    } catch (error: any) {
+      console.log(error.response?.data?.message);
+      errorMsg.value = error?.response?.data?.message || error?.message || 'Request failed';
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: errorMsg.value,
+      });
+    } finally {
+      loading.value = false;
+    }
   }
 </script>
 
