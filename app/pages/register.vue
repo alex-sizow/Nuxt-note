@@ -22,13 +22,16 @@
           password: password.value,
         },
       })
-      Swal.fire({
+      const { isConfirmed } = await Swal.fire({
         icon: 'success',
         title: 'Registration successful',
         text: 'You have been registered successfully!',
         confirmButtonText: 'Close',
       });
-      console.log('User registration response:', response);
+
+      if (isConfirmed) {
+        navigateTo('/');
+      }
     } catch (error: any) {
       console.log(error.response?.data?.message);
       errorMsg.value = error?.response?.data?.message || error?.message || 'Request failed';

@@ -1,6 +1,7 @@
 import prisma from "../../lib/prisma";
 import bcrypt from "bcryptjs";
 import validator from 'validator'
+import jwt from 'jsonwebtoken'
 
 export default defineEventHandler(async (event) => {
 
@@ -23,13 +24,23 @@ export default defineEventHandler(async (event) => {
 
     const salt = await bcrypt.genSalt(10);
     const passwordHash = await bcrypt.hash(body.password, salt);
-    await prisma.user.create({
+    const user = await prisma.user.create({
       data: {
         email: body.email,
         password: passwordHash
       }
     });
-    return { data: 'success!' };
+
+    const jwtSecret = process.env.JWT_SECRET;
+
+    if (!jwtSecret) {
+      throw createError({ statusCode: 500, statusMessage: 'JWT secret not configured' });
+    }
+    const token = jwt.sign({ id: user.id }, jwtSecret);
+
+    setCookie(event, 'AlexNoteJWT', token);
+
+    return { data: 'success!', token };
   }
   catch (error: any) {
     console.log(error.code);

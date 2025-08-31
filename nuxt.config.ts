@@ -9,6 +9,7 @@ export default defineNuxtConfig({
 
   runtimeConfig: {
     databaseUrl: process.env.DATABASE_URL,
+    jwtSecret: process.env.JWT_SECRET || 'default_jwt_secret'
   },
 
 
