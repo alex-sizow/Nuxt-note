@@ -13,63 +13,62 @@ npm install
 # pnpm
 pnpm install
 
-# yarn
-yarn install
+## Работа с Prisma и запуск проекта (русский)
 
-# bun
-bun install
+Ниже шаги, чтобы включить Prisma, сгенерировать клиент, применить миграции и запустить проект локально.
+
+1) Создайте файл `.env` в корне проекта (если ещё нет) и добавьте переменные окружения. Пример:
+
+```properties
+DATABASE_URL="mysql://root:prospekt@127.0.0.1:3306/nuxt_note"
+JWT_SECRET="<ваш_секрет>"
 ```
 
-## Development Server
-
-Start the development server on `http://localhost:3000`:
+2) Установите зависимости (используется pnpm в этом проекте):
 
 ```bash
-# npm
-npm run dev
+pnpm install
+```
 
-# pnpm
+3) Сгенерируйте Prisma Client:
+
+```bash
+npx prisma generate
+```
+
+4) Примените миграции (в development режиме) — создаст/обновит таблицы:
+
+```bash
+npx prisma migrate dev --name init
+```
+
+Если у вас уже есть миграции и вы просто хотите применить их в production/CI, используйте:
+
+```bash
+npx prisma migrate deploy
+```
+
+5) Опционально: подтянуть схему из существующей базы (если вы работали напрямую в БД):
+
+```bash
+npx prisma db pull
+```
+
+6) Запустите проект в режиме разработки:
+
+```bash
 pnpm dev
-
-# yarn
-yarn dev
-
-# bun
-bun run dev
 ```
 
-## Production
+Полезные команды:
 
-Build the application for production:
+- Сгенерировать или пересоздать клиент: `npx prisma generate`
+- Создать миграцию: `npx prisma migrate dev --name <описание>`
+- Применить миграции: `npx prisma migrate deploy`
+- Подтянуть существующую схему из БД: `npx prisma db pull`
 
-```bash
-# npm
-npm run build
+Внимание:
+- Не храните реальные секреты в публичных репозиториях. Добавьте `.env` в `.gitignore`.
+- Убедитесь, что MySQL запущен и доступен по `DATABASE_URL` перед запуском миграций.
 
-# pnpm
-pnpm build
 
-# yarn
-yarn build
-
-# bun
-bun run build
-```
-
-Locally preview production build:
-
-```bash
-# npm
-npm run preview
-
-# pnpm
-pnpm preview
-
-# yarn
-yarn preview
-
-# bun
-bun run preview
-```
-
-Check out the [deployment documentation](https://nuxt.com/docs/getting-started/deployment) for more information.
